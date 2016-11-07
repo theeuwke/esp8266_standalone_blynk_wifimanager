@@ -44,7 +44,7 @@ Ticker ticker;
 
 // You should get Auth Token in the Blynk App.
 // Go to the Project Settings (nut icon).
-char auth[] = "f7f7aab7e2894b29b4ffbd71979f696d";
+char auth[] = "your_own_api_code";
 
 #define TRIGGER_PIN 0
 #define LED_PIN 13
@@ -94,6 +94,26 @@ void setup()
 
 void loop()
 {
+  int count = 0;
   Blynk.run();
+
+  while(digitalRead(TRIGGER_PIN) == LOW) {
+    delay(100);
+    count++;
+    if(count > 30) {
+      Serial.println("Forget WIFI credentials...");
+      //ESP.eraseConfig();
+      WiFi.disconnect();
+      Serial.println("Erased!");
+      digitalWrite(LED_PIN, LOW);
+      delay(1000);
+      Serial.println("Resetting...");
+      count = 0;
+      digitalWrite(LED_PIN, HIGH);
+      delay(100);
+      ESP.reset();
+      delay(1000);
+    }
+  }
 }
 
